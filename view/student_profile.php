@@ -304,6 +304,8 @@ if ($student_code != 0){
             $record->academic_class = 'div_no_risk';
             break;
      }
+}else{
+
 }
 
 /**
