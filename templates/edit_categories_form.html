@@ -1,0 +1,31 @@
+<html>
+        <!-- nombres de las columnas -->  
+          <form>
+              <div id="divPadre" class="div1">
+               <select title="Seleccione la categoria padre." id="padre" name="padre" class="padre">
+               </select>
+             </div>
+             <div id="divName" class="div1">
+               <input title="Ingrese el nombre del elemento." type="text" id="inputNombre" name="inputNombre" class="inputNombre" placeholder="Nombre Categoria o Item">
+             </div>
+             <div id="divPeso"  class="div1" hidden>
+               <input type="text" id="inputValor" name="inputValor" class="inputValor" placeholder="peso %"></input>
+             </div>
+            <div id="divTipeC"  class="div1">
+               <select id="tipoCalificacion" name="tipoCalificacion" class="selectTipo">
+                 <option >Tipo de Calificación</option>
+                 <option value = '0'>Promedio Simple</option>
+                 <option value = '1'>Promedio Ponderado</option>
+                 <option value = '2'>Nota mas alta(Parciales)</option>
+               </select>
+             </div>
+            <div><span class = "btn btn-acept" title="Cancelar" id = "cancel">
+                <img src="../templates/exit.png" />
+            </span>
+            <span class = "btn btn-acept" title="Guardar elemento" id = "save">
+                <img src="../templates/acept.png" />
+            </span></div> 
+
+          </form>
+        <!-- form end -->
+</html>

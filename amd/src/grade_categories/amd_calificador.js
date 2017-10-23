@@ -231,11 +231,13 @@ requirejs(['jquery', 'bootstrap', 'sweetalert'], function($) {
             return;
         }
         $('.new').prop('disabled', true);
+        $('.edit').prop('disabled', true);
+        
 
         var newDiv = $("<div class = 'divForm'>");
         newDiv.load("../templates/categories_form.html");
 
-        var parent = $(this).parent();
+        var parent = $(this).parent().parent();
         parent.append('<hr style = "border-top: 1px solid #ddd">');
         parent.append(newDiv);
 
@@ -300,7 +302,147 @@ requirejs(['jquery', 'bootstrap', 'sweetalert'], function($) {
         }, 400);
     });
 
+    $(document).on('click', '.edit', function() {
+        var newDiv = $("<div class = 'divForm'>");
+        newDiv.load("../templates/edit_categories_form.html");
 
+        var parent = $(this).parent().parent();
+        var element = $(this).parent().prev().prev(); 
+        var name = element.attr('title');
+        var id_element = parent.parent().attr('id').split('_')[1];
+        var agg_parent = parent.find('.maxweight').text();
+        
+        parent.append('<hr style = "border-top: 1px solid #ddd">');
+        parent.append(newDiv);
+        $('.new').prop('disabled', true);
+        $('.edit').prop('disabled', true);
+        var agg = parent.attr("id");
+        var type = "cat";
+        window.setTimeout(function() {
+                      
+            if(agg == 10){
+                $('#tipoCalificacion').val('1')
+            }else if(agg == 11){
+                $('#tipoCalificacion').val('0')
+            }else if (agg == 6){
+                $('#tipoCalificacion').val('2')
+            }else{
+                $('#divTipeC').hide();
+                id_element = agg.split('_')[1];
+                type = "it";
+            }
+            
+            if(agg_parent != '-'){
+                var peso = agg_parent.split('(')[1].split(' ')[0];
+                $("#divPeso").show();
+                $("#inputValor").val(peso);
+            }else{
+                var peso = 0;
+            }
+
+            var id_course = getCourseid();
+            load_parent_categorie(id_course,id_element,type);
+            
+            $('#inputNombre').val(name);
+
+            $('#inputNombre').on('blur', function(){
+                var nombre = $.trim($('#inputNombre').val());
+                if(nombre == ''){
+                    swal({
+                        title: "Ingrese un nombre",
+                        html: true,
+                        type: "warning",
+                        confirmButtonColor: "#d51b23"
+                    });
+                }
+            })
+
+            $("#padre").on('change', function(){
+                var padre = $(this).val();
+                padre = $("#"+padre).parent().attr('id'); 
+                if(padre == 10){
+                    $("#divPeso").show();
+                }
+            })
+
+            $("#inputValor").on('blur', function() {
+                //se revisa que el elemento digitado cumpla con las restricciones
+                var numero = $(this).val();
+                var maxPeso= $('#padre').val()
+                alert(parseInt($("#"+maxPeso).next().attr('id')))
+                maxPeso = parseInt($("#"+maxPeso).next().attr('id'))+parseInt(peso)
+                //si no cumple con la restriccion de estar entre 0 y 100 entonces se realiza el aviso y se pone el valor en 0
+               
+                if (numero < 0 || numero > maxPeso) {
+                    swal({
+                        title: "El valor debe estar entre 0 y el peso máximo: "+maxPeso,
+                        text: "\n\rUsted ingresó: " + numero,
+                        html: true,
+                        type: "warning",
+                        confirmButtonColor: "#d51b23"
+                    });
+                    $(this).val(peso);
+                }
+            });
+            $('#inputValor').on('keypress', function(e) {
+                tecla = (document.all) ? e.keyCode : e.which;
+
+                //Tecla de retroceso para borrar y el punto(.) siempre la permite
+                if (tecla == 8 || tecla == 46) {
+                    return true;
+                }
+                // Patron de entrada, en este caso solo acepta numeros
+                patron = /[0-9]/;
+                tecla_final = String.fromCharCode(tecla);
+                return patron.test(tecla_final);
+
+            });
+
+            $('#save').on('click', function() {
+                 if(type == "cat"){
+                    update_category(id_element);
+                 }else{
+                    update_item(id_element);
+                 }
+                 loadCategories(id_course);
+            });
+
+            $('#cancel').on('click', function() {
+                loadCategories(id_course);
+            });
+        }, 400);
+
+    });
+
+    function update_category(id_cat){
+
+    }
+
+    function load_parent_categorie(id_course,id_element,type_e) {
+        $.ajax({
+            type: "POST",
+            data: {
+                course: id_course,
+                element: id_element,
+                type_e: type_e,
+                type: "loadParentCat"
+            },
+            url: "../managers/grade_categories/grade_categories_processing.php",
+            success: function(msg) {
+                if(msg.total){
+                    $('#divPadre').hide();
+                }else{
+                    $('#padre').append(msg.html);
+                }
+            },
+            dataType: "json",
+            cache: "false",
+            error: function(msg) {
+                console.log('hola'+msg);
+            },
+        });
+        
+    }
     function getCourseid() {
         var informacionUrl = window.location.search.split("&");
         for (var i = 0; i < informacionUrl.length; i++) {
