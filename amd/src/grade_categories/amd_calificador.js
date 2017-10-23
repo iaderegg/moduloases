@@ -418,6 +418,10 @@ requirejs(['jquery', 'bootstrap', 'sweetalert'], function($) {
 
     }
 
+    function update_item(id_item){
+        
+    }
+
     function load_parent_categorie(id_course,id_element,type_e) {
         $.ajax({
             type: "POST",
