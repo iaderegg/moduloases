@@ -44,6 +44,16 @@ if(isset($_POST['course'])&&isset($_POST['parent'])&&isset($_POST['fullname'])&&
 
  }
 
- 
+ if(isset($_POST['course'])&&isset($_POST['type'])&&isset($_POST['name'])&&isset($_POST['element'])&&isset($_POST['parent'])&&isset($_POST['weight'])&&$_POST['type']=="update_item"){
+    //PENDIENTE CAMBIAR LAS VARIABLES DE LA FUNCION DE ABAJO
+    //$upd = update_item($id, $parent, $name,$weight,$item);
+    $resp = new stdClass;
+    if($upd == 0){
+        $resp->error = true;
+    }else{
+        $resp->msg = "Ítem actualizado correctamente";
+    }
+    echo json_encode($resp);
+ }
 
 ?>

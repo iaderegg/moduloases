@@ -493,18 +493,18 @@ function insertItem($course,$father,$name,$valsend,$item){
     
 }
 
-function update_item($id, $parent, $name,$weight,$item){
+function update_item($id, $parent, $name,$weight,$item,$id_course){
     global $DB;
     $object = new stdClass;
+    $object->id = $id;
     
-    
+    //PENDIENTE: $parent ES UN STRING CON EL NOMBRE. HACER CONSULTA PARA SACAR ID.(USAR $id_course)
+
     if($item){
-        $object->id = $id;
         $object->categoryid = $parent;
         $object->fullname = $name;
         $object->aggregationcoef = $weight;
     }else{
-        $object->id = $id;
         $object->aggregationcoef = $weight;
     }
     $succes = $DB->update_record('grade_items',$object);

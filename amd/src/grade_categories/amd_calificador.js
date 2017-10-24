@@ -415,11 +415,68 @@ requirejs(['jquery', 'bootstrap', 'sweetalert'], function($) {
     });
 
     function update_category(id_cat){
-
+        var padre = $("#padre").val();
+        var nombre = $("#inputNombre").val();
+        var peso = $("#inputValor").val();
+        var tipo = parseInt($("#tipoCalificacion").val());
+        var agg;
+        switch (tipo) {
+            case 0:
+                agg = 11;
+                break;
+            case 1:
+                agg = 10;
+                break;
+            case 2:
+                agg = 6;
+                break;
+        }
+       
     }
 
     function update_item(id_item){
-        
+        var padre = $("#padre").val();
+        var nombre = $("#inputNombre").val();
+        var peso = $("#inputValor").val();
+        var id_course = getCourseid();
+        if(peso == ''){
+            peso = 0;
+        }
+       
+        $.ajax({
+            type: "POST",
+            data: {
+                course: id_course,
+                element: id_item,
+                name: nombre,
+                parent: padre,
+                weight: peso,
+                type: "update_item"
+            },
+            url: "../managers/grade_categories/grade_categories_processing.php",
+            success: function(msg) {
+                if(msg.error){
+                    swal({
+                        title: "Error al actualizar el item",
+                        html: true,
+                        type: "success",
+                        confirmButtonColor: "#d51b23"
+                    });
+                }else{
+                    swal({
+                        title: msg.msg,
+                        html: true,
+                        type: "success",
+                        confirmButtonColor: "#d51b23"
+                    });                
+                }
+            },
+            dataType: "json",
+            cache: "false",
+            error: function(msg) {
+                console.log(msg);
+            },
+        });
     }
 
     function load_parent_categorie(id_course,id_element,type_e) {
@@ -484,7 +541,7 @@ requirejs(['jquery', 'bootstrap', 'sweetalert'], function($) {
         if (tipoItem == 'CATEGORÍA') {
             if (validateDataCat(aggParent)) {
                 var name = $.trim($('#inputNombre').val());
-                var weigth = $('#inputValor').val();
+                var weight = $('#inputValor').val();
                 var agg = getAggregation($('#tipoCalificacion').prop('selectedIndex'));
                 $.ajax({
                     type: "POST",
@@ -494,7 +551,7 @@ requirejs(['jquery', 'bootstrap', 'sweetalert'], function($) {
                         fullname: name,
                         agregation: agg,
                         tipo: tipoItem,
-                        peso: weigth
+                        peso: weight
                     },
                     url: "../managers/grade_categories/grade_categories_processing.php",
                     success: function(msg) {
@@ -535,7 +592,7 @@ requirejs(['jquery', 'bootstrap', 'sweetalert'], function($) {
         else if (tipoItem == 'ÍTEM') {
             if (validateDataIt(aggParent)) {
                 var name = $.trim($('#inputNombre').val());
-                var weigth = $('#inputValor').val();
+                var weight = $('#inputValor').val();
                 $.ajax({
                     type: "POST",
                     data: {
@@ -543,7 +600,7 @@ requirejs(['jquery', 'bootstrap', 'sweetalert'], function($) {
                         parent: idParent,
                         fullname: name,
                         tipo: tipoItem,
-                        peso: weigth
+                        peso: weight
                     },
                     url: "../managers/grade_categories/grade_categories_processing.php",
                     success: function(msg) {
@@ -582,7 +639,7 @@ requirejs(['jquery', 'bootstrap', 'sweetalert'], function($) {
         else if (tipoItem == 'PARCIAL') {
             if (validateDataParcial(aggParent)) {
                 var name = $.trim($('#inputNombre').val());
-                var weigth = $('#inputValor').val();
+                var weight = $('#inputValor').val();
                 $.ajax({
                     type: "POST",
                     data: {
@@ -591,7 +648,7 @@ requirejs(['jquery', 'bootstrap', 'sweetalert'], function($) {
                         fullname: name,
                         agregation: 6,
                         tipo: tipoItem,
-                        peso: weigth
+                        peso: weight
                     },
                     url: "../managers/grade_categories/grade_categories_processing.php",
                     success: function(msg) {
